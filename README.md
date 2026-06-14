@@ -20,3 +20,7 @@ npm run dev      # servidor de desarrollo
 npm run build    # build de producción
 npm run preview  # previsualizar build
 ```
+
+## Se usa el Spec Driven Design
+
+Basado en /spec y /spec-impl
