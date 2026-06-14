@@ -1,4 +1,4 @@
 
 <template>
-  <h1 class="text-red-500 font-bold text-5xl">Home Page</h1>
+  <h1 class="font-pixel text-5xl uppercase tracking-widest text-cyan">Home Page</h1>
 </template>
