@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { GAMES } from '../../data/games'
 import FloatingSilhouettes from '../../components/FloatingSilhouettes.vue'
+import Nav from '../../components/Nav.vue'
 
 const router = useRouter()
 
@@ -56,6 +57,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Nav />
   <div class="home fade-in">
 
     <!-- ① Hero -->
@@ -76,10 +78,10 @@ onMounted(() => {
           <button class="btn xl pulse" @click="router.push('/games')">▶&nbsp; EXPLORAR JUEGOS</button>
           <button class="btn xl magenta" @click="router.push('/auth')">✦&nbsp; CREAR CUENTA</button>
         </div>
-        <div class="hero-scroll" aria-hidden="true">
-          <span>DESLIZA</span>
-          <span class="arrow">▼</span>
-        </div>
+      </div>
+      <div class="hero-scroll" aria-hidden="true">
+        <span>DESLIZA</span>
+        <span class="arrow">▼</span>
       </div>
     </section>
 

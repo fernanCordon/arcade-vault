@@ -14,6 +14,7 @@ export const router = createRouter({
     { path: '/auth', name: 'auth', component: Auth },
     { path: '/games/:id', name: 'game-detail', component: Detalle },
     { path: '/games/:id/play', name: 'game-play', component: Reproductor },
+    { path: '/about', name: 'about', component: () => import('../pages/about/About.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
