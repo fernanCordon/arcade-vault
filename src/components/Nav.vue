@@ -11,7 +11,8 @@ const user = computed(() => getUser())
 const coins = ref(1250)
 
 const links = [
-  { label: 'Biblioteca', to: '/' },
+  { label: 'Inicio', to: '/' },
+  { label: 'Biblioteca', to: '/games' },
   { label: 'Salón de la Fama', to: '/salon' },
 ]
 
