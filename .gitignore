@@ -7,6 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+.playwright-screenshots/*
+!.playwright-screenshots/.gitkeep
+
+.playwright-mcp/*
+!.playwright-mcp/.gitkeep
+
 node_modules
 dist
 dist-ssr
