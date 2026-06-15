@@ -14,6 +14,7 @@ const links = [
   { label: 'Inicio', to: '/' },
   { label: 'Biblioteca', to: '/games' },
   { label: 'Salón de la Fama', to: '/salon' },
+  { label: 'Acerca de', to: '/about' },
 ]
 
 function isActive(to: string) {
