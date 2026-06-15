@@ -12,8 +12,8 @@ export const router = createRouter({
     { path: '/games', name: 'biblioteca', component: Biblioteca },
     { path: '/salon', name: 'salon', component: Salon },
     { path: '/auth', name: 'auth', component: Auth },
-    { path: '/juego/:id', name: 'detalle', component: Detalle },
-    { path: '/jugar/:id', name: 'reproductor', component: Reproductor },
+    { path: '/games/:id', name: 'game-detail', component: Detalle },
+    { path: '/games/:id/play', name: 'game-play', component: Reproductor },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

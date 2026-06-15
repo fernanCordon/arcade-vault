@@ -17,7 +17,7 @@ const filtered = computed(() => {
 })
 
 function goDetail(id: string) {
-  router.push(`/juego/${id}`)
+  router.push(`/games/${id}`)
 }
 </script>
 
@@ -78,7 +78,7 @@ function goDetail(id: string) {
             </div>
             <button
               :class="['btn', game.color === 'magenta' ? 'magenta' : game.color === 'yellow' ? 'yellow' : '']"
-              @click.stop="router.push(`/jugar/${game.id}`)"
+              @click.stop="router.push(`/games/${game.id}/play`)"
             >JUGAR</button>
           </div>
         </div>
