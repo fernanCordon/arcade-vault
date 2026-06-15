@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Estado | Aprobado |
+| Estado | Implementado |
 | Dependencias | ninguna (es el primer spec) |
 | Fecha | 2026-06-15 |
 | Objetivo | Portar los 5 templates HTML del MVP a componentes Vue 3 con routing, datos compartidos y Nav reutilizable — sin implementar ningún juego real. |
@@ -82,18 +82,18 @@ No hay nuevas estructuras de base de datos ni stores — todo es efímero o cons
 
 ## Criterios de aceptación
 
-- [ ] `/` muestra la Biblioteca con hero, buscador, chips de filtro y grid de 8 cards
-- [ ] Filtrar por categoría y buscar por nombre reduce las cards visibles correctamente
-- [ ] Click en una card o en "JUGAR" navega a `/juego/:id`
-- [ ] `/juego/:id` muestra cover, info, stat-strip y leaderboard con el juego correcto
-- [ ] Botón "JUGAR AHORA" en detalle navega a `/jugar/:id`
-- [ ] `/jugar/:id` muestra HUD con score/vidas/nivel, carcasa CRT con animación y botones de pausa/fin/salir
-- [ ] Modal de fin de partida aparece al pulsar "FIN"; permite guardar nombre y reiniciar
-- [ ] `/salon` muestra tabs con los 8 juegos; cambiar tab actualiza podio y tabla
-- [ ] `/auth` muestra tabs login/registro, alterna el campo email correctamente, y el botón invitado funciona
-- [ ] Nav está presente en todas las pantallas con el link activo resaltado
-- [ ] Panel mobile aparece y se cierra correctamente en pantallas ≤840px
-- [ ] `npm run build` termina sin errores de TypeScript
+- [x] `/` muestra la Biblioteca con hero, buscador, chips de filtro y grid de 8 cards
+- [x] Filtrar por categoría y buscar por nombre reduce las cards visibles correctamente
+- [x] Click en una card o en "JUGAR" navega a `/juego/:id`
+- [x] `/juego/:id` muestra cover, info, stat-strip y leaderboard con el juego correcto
+- [x] Botón "JUGAR AHORA" en detalle navega a `/jugar/:id`
+- [x] `/jugar/:id` muestra HUD con score/vidas/nivel, carcasa CRT con animación y botones de pausa/fin/salir
+- [x] Modal de fin de partida aparece al pulsar "FIN"; permite guardar nombre y reiniciar
+- [x] `/salon` muestra tabs con los 8 juegos; cambiar tab actualiza podio y tabla
+- [x] `/auth` muestra tabs login/registro, alterna el campo email correctamente, y el botón invitado funciona
+- [x] Nav está presente en todas las pantallas con el link activo resaltado
+- [x] Panel mobile aparece y se cierra correctamente en pantallas ≤840px
+- [x] `npm run build` termina sin errores de TypeScript
 
 ---
 
