@@ -74,7 +74,7 @@ function lbClass(i: number) {
             </div>
           </div>
           <div class="detail-actions">
-            <button class="btn xl pulse" @click="router.push(`/jugar/${game.id}`)">▶&nbsp; JUGAR AHORA</button>
+            <button class="btn xl pulse" @click="router.push(`/games/${game.id}/play`)">▶&nbsp; JUGAR AHORA</button>
             <button class="btn ghost lg" @click="router.push('/')">VOLVER AL VAULT</button>
           </div>
         </div>
