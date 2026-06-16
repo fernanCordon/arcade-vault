@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { GAMES } from '../../data/games'
+import { useGamesStore } from '../../stores/games'
 import FloatingSilhouettes from '../../components/FloatingSilhouettes.vue'
 import Nav from '../../components/Nav.vue'
+
+const gamesStore = useGamesStore()
 
 const router = useRouter()
 
@@ -144,7 +146,7 @@ onMounted(() => {
       </div>
       <div class="mini-rail">
         <div
-          v-for="game in GAMES.slice(0, 6)"
+          v-for="game in gamesStore.games.slice(0, 6)"
           :key="game.id"
           class="mini-card"
           @click="router.push('/juego/' + game.id)"

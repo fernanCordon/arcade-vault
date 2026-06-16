@@ -67,17 +67,6 @@ export const GAMES: Game[] = [
     plays: '44.1K',
   },
   {
-    id: 'rocas',
-    title: 'ROCAS',
-    short: 'Sobrevive en el asteroide belt',
-    long: 'Tu nave gira en el vacío mientras rocas de todos los tamaños se fragmentan al impacto. No hay dirección segura.',
-    cat: 'SHOOTER',
-    cover: 'cover-rocas',
-    color: 'yellow',
-    best: 38900,
-    plays: '19.3K',
-  },
-  {
     id: 'rana',
     title: 'RANA VELOZ',
     short: 'Cruza sin ser aplastado',
@@ -99,17 +88,17 @@ export const GAMES: Game[] = [
     best: 0,
     plays: '3.1K',
   },
-  {
-    id: 'asteroids',
-    title: 'Asteroids',
-    short: 'Destruye asteroides y sobrevive',
-    long: 'Nave espacial en un campo de asteroides con envolvimiento de bordes. Destruye asteroides para sumar puntos: los grandes se parten en medianos, los medianos en pequeños.',
-    cat: 'SHOOTER',
-    cover: 'cover-asteroids',
-    color: 'cyan',
-    best: 0,
-    plays: '0',
-  },
+  // {
+  //   id: 'asteroids',
+  //   title: 'ASTEROIDS',
+  //   short: 'Destruye asteroides y sobrevive',
+  //   long: 'Nave espacial en un campo de asteroides con envolvimiento de bordes. Destruye asteroides para sumar puntos: los grandes se parten en medianos, los medianos en pequeños.',
+  //   cat: 'SHOOTER',
+  //   cover: 'cover-asteroids',
+  //   color: 'cyan',
+  //   best: 0,
+  //   plays: '0',
+  // },
 ]
 
 export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'VERSUS']

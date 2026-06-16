@@ -1,35 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
-import { GAMES } from '../../data/games'
+import { useGamesStore } from '../../stores/games'
+import { getScores, type ScoreEntry } from '../../lib/scores'
 
 const route = useRoute()
 const router = useRouter()
+const gamesStore = useGamesStore()
 
-const game = computed(() => GAMES.find(g => g.id === route.params.id) ?? GAMES[0])
+const game = computed(() => gamesStore.byId(route.params.id) ?? gamesStore.games[0])
 
-const PLAYERS = ['PX_KAI','NEONFOX','Z3R0COOL','M00NRYU','VAULT_07','GLITCHA','ATARI_KID','CYBER_LU','MAGENTA88','SCANLINE','BIT_LORD','ARKADYA','DROID_X','RGB_QUEEN','PIXEL_DAD','RETROVIRA','VECTORX','JOY_STK']
+const leaderboard = ref<ScoreEntry[]>([])
+const loading = ref(true)
 
-function seededScores(seed: number, count = 10) {
-  let s = seed
-  const rand = () => (s = (s * 9301 + 49297) % 233280) / 233280
-  const used = new Set<string>()
-  const rows: { rank: number; name: string; score: number; date: string }[] = []
-  for (let i = 0; i < count; i++) {
-    let name: string
-    do { name = PLAYERS[Math.floor(rand() * PLAYERS.length)] } while (used.has(name) && used.size < PLAYERS.length)
-    used.add(name)
-    const base = Math.floor(50000 + rand() * 250000)
-    const score = base - i * Math.floor(2000 + rand() * 4000)
-    const day = String(1 + Math.floor(rand() * 28)).padStart(2, '0')
-    const mon = String(1 + Math.floor(rand() * 12)).padStart(2, '0')
-    rows.push({ rank: i + 1, name, score: Math.max(score, 1000), date: `${day}/${mon}/2026` })
+onMounted(async () => {
+  try {
+    leaderboard.value = await getScores(route.params.id as string)
+  } finally {
+    loading.value = false
   }
-  return rows.sort((a, b) => b.score - a.score).map((r, i) => ({ ...r, rank: i + 1 }))
-}
-
-const scores = computed(() => seededScores((route.params.id as string).length * 17 + 3, 10))
+})
 
 function lbClass(i: number) {
   if (i === 0) return 'lb-row top1'
@@ -83,17 +74,20 @@ function lbClass(i: number) {
       <aside>
         <div class="leaderboard">
           <h3>MEJORES PUNTUACIONES</h3>
-          <div
-            v-for="(row, i) in scores"
-            :key="row.name"
-            :class="lbClass(i)"
-          >
-            <div class="rk">#{{ String(row.rank).padStart(2, '0') }}</div>
-            <div class="pl">
-              {{ row.name }}
-              <div style="font-size:10px;color:var(--ink-faint);letter-spacing:0.1em;">{{ row.date }}</div>
+          <div v-if="loading" class="mono" style="color:var(--ink-dim);font-size:11px;padding:16px 0;">Cargando…</div>
+          <template v-else-if="leaderboard.length">
+            <div
+              v-for="(row, i) in leaderboard"
+              :key="row.id"
+              :class="lbClass(i)"
+            >
+              <div class="rk">#{{ String(i + 1).padStart(2, '0') }}</div>
+              <div class="pl">{{ row.player_name }}</div>
+              <div class="sc">{{ row.score.toLocaleString('es-ES') }}</div>
             </div>
-            <div class="sc">{{ row.score.toLocaleString('es-ES') }}</div>
+          </template>
+          <div v-else class="mono" style="color:var(--ink-dim);font-size:11px;padding:16px 0;line-height:1.6;">
+            Sé el primero en entrar al salón de la fama
           </div>
         </div>
       </aside>
