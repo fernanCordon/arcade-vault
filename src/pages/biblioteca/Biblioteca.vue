@@ -2,14 +2,17 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
-import { GAMES, CATS } from '../../data/games'
+import { CATS } from '../../data/games'
+import { useGamesStore } from '../../stores/games'
+
+const gamesStore = useGamesStore()
 
 const router = useRouter()
 const search = ref('')
 const activecat = ref('TODOS')
 
 const filtered = computed(() => {
-  return GAMES.filter(g => {
+  return gamesStore.games.filter(g => {
     const matchCat = activecat.value === 'TODOS' || g.cat === activecat.value
     const matchSearch = g.title.toLowerCase().includes(search.value.toLowerCase())
     return matchCat && matchSearch

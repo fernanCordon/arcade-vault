@@ -2,13 +2,14 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
-import { GAMES } from '../../data/games'
+import { useGamesStore } from '../../stores/games'
 import { getScores, type ScoreEntry } from '../../lib/scores'
 
 const route = useRoute()
 const router = useRouter()
+const gamesStore = useGamesStore()
 
-const game = computed(() => GAMES.find(g => g.id === route.params.id) ?? GAMES[0])
+const game = computed(() => gamesStore.byId(route.params.id) ?? gamesStore.games[0])
 
 const leaderboard = ref<ScoreEntry[]>([])
 const loading = ref(true)

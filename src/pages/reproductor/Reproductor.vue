@@ -2,9 +2,11 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
-import { GAMES } from '../../data/games'
+import { useGamesStore } from '../../stores/games'
 import { getUser } from '../../data/user'
 import { submitScore } from '../../lib/scores'
+
+const gamesStore = useGamesStore()
 
 interface GameCallbacks {
   onScoreChange: (score: number) => void
@@ -24,7 +26,7 @@ interface GameModule {
 const route = useRoute()
 const router = useRouter()
 
-const gameData = computed(() => GAMES.find(g => g.id === route.params.id) ?? GAMES[0])
+const gameData = computed(() => gamesStore.byId(route.params.id) ?? gamesStore.games[0])
 
 const user = getUser()
 const score = ref(0)
