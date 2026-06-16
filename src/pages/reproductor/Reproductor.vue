@@ -3,7 +3,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
 import { GAMES } from '../../data/games'
-import { saveUser, getUser } from '../../data/user'
+import { getUser } from '../../data/user'
+import { submitScore } from '../../lib/scores'
 
 interface GameCallbacks {
   onScoreChange: (score: number) => void
@@ -31,8 +32,10 @@ const lives = ref(3)
 const level = ref(1)
 const paused = ref(false)
 const over = ref(false)
-const playerName = ref(user?.name ?? 'INVITADO')
+const playerName = ref(localStorage.getItem('av_player_name') ?? user?.name ?? 'INVITADO')
 const saved = ref(false)
+const submitting = ref(false)
+const submitError = ref('')
 
 const gameCanvas = ref<HTMLCanvasElement | null>(null)
 const hasRealGame = ref(false)
@@ -86,10 +89,19 @@ function end() {
   over.value = true
 }
 
-function saveScore() {
-  if (playerName.value.trim()) {
-    saveUser({ name: playerName.value.trim().toUpperCase() })
+async function saveScore() {
+  const name = playerName.value.trim().toUpperCase()
+  if (!name || submitting.value || saved.value) return
+  submitting.value = true
+  submitError.value = ''
+  try {
+    await submitScore(route.params.id as string, name, score.value)
+    localStorage.setItem('av_player_name', name)
     saved.value = true
+  } catch {
+    submitError.value = 'Error al guardar. Inténtalo de nuevo.'
+  } finally {
+    submitting.value = false
   }
 }
 
@@ -100,6 +112,8 @@ function restart() {
   paused.value = false
   over.value = false
   saved.value = false
+  submitting.value = false
+  submitError.value = ''
   gameModule?.restart()
 }
 
@@ -182,11 +196,17 @@ function exit() {
             type="text"
             placeholder="TUS INICIALES"
             maxlength="10"
+            :disabled="submitting"
             @input="playerName = (playerName as string).toUpperCase().slice(0, 10)"
           />
-          <button class="btn yellow" @click="saveScore">GUARDAR PUNTUACIÓN</button>
+          <button
+            class="btn yellow"
+            :disabled="submitting"
+            @click="saveScore"
+          >{{ submitting ? 'GUARDANDO…' : 'GUARDAR PUNTUACIÓN' }}</button>
         </div>
-        <div v-else class="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+        <div v-if="submitError" class="mono" style="color:var(--magenta);font-size:11px;margin-top:6px;">{{ submitError }}</div>
+        <div v-if="saved" class="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
 
         <div class="actions">
           <button class="btn" @click="restart">JUGAR DE NUEVO</button>
