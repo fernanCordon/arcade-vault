@@ -23,24 +23,71 @@ No hay test runner configurado todavía.
 - **Vite 8** con `@vitejs/plugin-vue`
 - **Tailwind CSS v4** mediante el plugin `@tailwindcss/vite` (sin archivo de configuración — usa el plugin de Vite directamente)
 - **Vue Router 5** con hash history (`createWebHashHistory`)
-- **Pinia 3** para manejo de estado
+- **Pinia 3** para manejo de estado (stores pendientes de implementar)
 
 ## Arquitectura
 
 ```
 src/
-  main.ts          # entrada de la app — monta Vue, registra router y pinia
-  App.vue          # raíz: un único <RouterView />
-  router/index.ts  # todas las rutas definidas aquí; rutas desconocidas redirigen a /
-  pages/           # una carpeta por ruta, ej. pages/home/Home.vue
-  components/      # componentes compartidos (vacío, pendiente de poblar)
-  stores/          # stores de pinia (vacío, pendiente de poblar)
-  style.css        # estilos globales, design tokens y componentes en capas
+  main.ts                        # entrada de la app — monta Vue, registra router y pinia
+  App.vue                        # raíz: un único <RouterView />
+  router/index.ts                # todas las rutas definidas aquí; rutas desconocidas redirigen a /
+  data/
+    games.ts                     # catálogo de juegos (GAMES[]) + tipos + CATS
+    user.ts                      # persistencia de usuario en localStorage
+  pages/
+    home/Home.vue                # landing con hero, silhouettes flotantes y grid de juegos
+    biblioteca/Biblioteca.vue    # catálogo con búsqueda y filtros por categoría
+    salon/Salon.vue              # salón de la fama con podio y tabla de ranking
+    detalle/Detalle.vue          # detalle de juego con stats, tags y leaderboard
+    reproductor/Reproductor.vue  # pantalla de juego (carcasa CRT + HUD + arena)
+    auth/Auth.vue                # login / registro con persistencia en localStorage
+    about/About.vue              # página "acerca de" con highlights del proyecto
+  components/
+    Nav.vue                      # navbar compartida (sticky, glassmorphism, menú móvil)
+    FloatingSilhouettes.vue      # siluetas SVG pixel-art animadas (usadas en Home)
+  stores/                        # stores de Pinia (vacío, pendiente de poblar)
+  style.css                      # estilos globales, design tokens y componentes en capas
 ```
+
+### Rutas
+
+| Ruta | Nombre | Componente |
+|---|---|---|
+| `/` | `home` | `Home.vue` |
+| `/games` | `biblioteca` | `Biblioteca.vue` |
+| `/games/:id` | `game-detail` | `Detalle.vue` |
+| `/games/:id/play` | `game-play` | `Reproductor.vue` |
+| `/salon` | `salon` | `Salon.vue` |
+| `/auth` | `auth` | `Auth.vue` |
+| `/about` | `about` | `About.vue` |
+| `/*` | — | redirige a `/` |
+
+### Datos (`src/data/`)
+
+**`games.ts`** — fuente de verdad del catálogo:
+- `Game` interface: `id`, `title`, `short`, `long`, `cat`, `cover`, `color`, `best`, `plays`
+- `GAMES: Game[]` — 8 juegos: `bricks`, `tetro`, `snake`, `glot`, `invaders`, `rocas`, `rana`, `duelo`
+- `CATS` — categorías: `TODOS | ARCADE | PUZZLE | SHOOTER | VERSUS`
+
+**`user.ts`** — persistencia mínima:
+- `getUser()` / `saveUser()` — lee y escribe `{ name: string }` en `localStorage` bajo la clave `av_user`
 
 Las páginas viven en `src/pages/<nombre-de-ruta>/`, co-localizando la vista con cualquier subcomponente específico de la página. Los componentes reutilizables van en `src/components/`. Los stores de Pinia van en `src/stores/`.
 
 Tailwind v4 se configura únicamente a través del plugin de Vite — no existe archivo `tailwind.config.*`. Las clases utilitarias están disponibles globalmente; no agregar archivo de configuración salvo que alguna característica de v4 lo requiera.
+
+## Referencias de juegos (`references/started-games/`)
+
+Implementaciones de referencia en HTML/JS puro para integrar como juegos reales:
+
+| Carpeta | Juego |
+|---|---|
+| `arkanoid/` | Arkanoid (con niveles en `levels.js`) |
+| `asteroids/` | Asteroids |
+| `tetris/` | Tetris |
+
+Cada carpeta incluye su propio `CLAUDE.md` con instrucciones específicas de integración.
 
 ## Sistema de estilos (`src/style.css`)
 
