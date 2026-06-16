@@ -99,6 +99,17 @@ export const GAMES: Game[] = [
     best: 0,
     plays: '3.1K',
   },
+  {
+    id: 'asteroids',
+    title: 'Asteroids',
+    short: 'Destruye asteroides y sobrevive',
+    long: 'Nave espacial en un campo de asteroides con envolvimiento de bordes. Destruye asteroides para sumar puntos: los grandes se parten en medianos, los medianos en pequeños.',
+    cat: 'SHOOTER',
+    cover: 'cover-asteroids',
+    color: 'cyan',
+    best: 0,
+    plays: '0',
+  },
 ]
 
 export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'VERSUS']
