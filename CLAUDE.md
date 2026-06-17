@@ -23,7 +23,8 @@ No hay test runner configurado todavía.
 - **Vite 8** con `@vitejs/plugin-vue`
 - **Tailwind CSS v4** mediante el plugin `@tailwindcss/vite` (sin archivo de configuración — usa el plugin de Vite directamente)
 - **Vue Router 5** con hash history (`createWebHashHistory`)
-- **Pinia 3** para manejo de estado (stores pendientes de implementar)
+- **Pinia 3** para manejo de estado
+- **Supabase** como backend (BD y autenticación)
 
 ## Arquitectura
 
@@ -33,11 +34,20 @@ src/
   App.vue                        # raíz: un único <RouterView />
   router/index.ts                # todas las rutas definidas aquí; rutas desconocidas redirigen a /
   data/
-    games.ts                     # catálogo de juegos (GAMES[]) + tipos + CATS
+    games.ts                     # catálogo estático de juegos (GAMES[]) + tipos + CATS
     user.ts                      # persistencia de usuario en localStorage
+  lib/
+    supabase.ts                  # cliente Supabase (VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY)
+    games.ts                     # getGames() — fetch del catálogo desde la tabla `games` de Supabase
+    scores.ts                    # submitScore() / getScores() — tabla `scores` de Supabase
+  games/
+    snake/game.ts                # módulo TypeScript del juego Snake (callbacks: onScoreChange, onLifeLost, onLevelUp, onGameOver)
+    bricks/game.ts               # módulo TypeScript de Brick Breaker
+    tetro/game.ts                # módulo TypeScript de Tetris Stack
+    asteroids/game.ts            # módulo TypeScript de Asteroids
   pages/
     home/Home.vue                # landing con hero, silhouettes flotantes y grid de juegos
-    biblioteca/Biblioteca.vue    # catálogo con búsqueda y filtros por categoría
+    biblioteca/Biblioteca.vue    # catálogo con búsqueda, filtros por categoría y ordenación BD-primero
     salon/Salon.vue              # salón de la fama con podio y tabla de ranking
     detalle/Detalle.vue          # detalle de juego con stats, tags y leaderboard
     reproductor/Reproductor.vue  # pantalla de juego (carcasa CRT + HUD + arena)
@@ -46,7 +56,8 @@ src/
   components/
     Nav.vue                      # navbar compartida (sticky, glassmorphism, menú móvil)
     FloatingSilhouettes.vue      # siluetas SVG pixel-art animadas (usadas en Home)
-  stores/                        # stores de Pinia (vacío, pendiente de poblar)
+  stores/
+    games.ts                     # store Pinia de juegos: merge estático+BD, expone dbIds
   style.css                      # estilos globales, design tokens y componentes en capas
 ```
 
@@ -65,13 +76,46 @@ src/
 
 ### Datos (`src/data/`)
 
-**`games.ts`** — fuente de verdad del catálogo:
+**`games.ts`** — catálogo estático de respaldo (fallback sin red):
 - `Game` interface: `id`, `title`, `short`, `long`, `cat`, `cover`, `color`, `best`, `plays`
-- `GAMES: Game[]` — 8 juegos: `bricks`, `tetro`, `snake`, `glot`, `invaders`, `rocas`, `rana`, `duelo`
+- `GAMES: Game[]` — juegos activos (algunos comentados si aún no están integrados): `glot`, `invaders`, `rana`, `duelo`
 - `CATS` — categorías: `TODOS | ARCADE | PUZZLE | SHOOTER | VERSUS`
 
 **`user.ts`** — persistencia mínima:
 - `getUser()` / `saveUser()` — lee y escribe `{ name: string }` en `localStorage` bajo la clave `av_user`
+
+### Backend (`src/lib/`)
+
+- **`supabase.ts`** — cliente singleton de Supabase; variables de entorno `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`
+- **`games.ts`** — `getGames()` → fetch de la tabla `games`; mapea filas a la interface `Game`
+- **`scores.ts`** — `submitScore(gameId, playerName, score)` + `getScores(gameId?)` sobre la tabla `scores`; `ScoreEntry` interface
+
+### Store de juegos (`src/stores/games.ts`)
+
+- Inicializa `games` con el catálogo estático para UI instantánea
+- `load()` hace merge estático + BD: la BD pisa datos estáticos por `id`, ids nuevos se añaden
+- Expone `dbIds: Set<string>` — IDs que existen en Supabase (usado por Biblioteca para ordenar BD-primero)
+- `byId(id)` — lookup por ID
+
+### Módulos de juego (`src/games/`)
+
+Cada juego es un módulo TypeScript puro que recibe un `<canvas>` y un objeto de callbacks:
+
+```ts
+interface XxxCallbacks {
+  onScoreChange: (score: number) => void
+  onLifeLost:    (lives: number) => void
+  onLevelUp:     (level: number) => void
+  onGameOver:    (finalScore: number) => void
+}
+```
+
+| Módulo | Juego |
+|---|---|
+| `snake/game.ts` | Neon Snake |
+| `bricks/game.ts` | Brick Breaker |
+| `tetro/game.ts` | Tetris Stack |
+| `asteroids/game.ts` | Asteroids |
 
 Las páginas viven en `src/pages/<nombre-de-ruta>/`, co-localizando la vista con cualquier subcomponente específico de la página. Los componentes reutilizables van en `src/components/`. Los stores de Pinia van en `src/stores/`.
 

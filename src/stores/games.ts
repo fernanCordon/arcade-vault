@@ -8,11 +8,13 @@ export const useGamesStore = defineStore('games', () => {
   // Inicializa con los estáticos → UI instantánea, sin parpadeo
   const games = ref<Game[]>([...GAMES])
   const loaded = ref(false)
+  const dbIds = ref<Set<string>>(new Set())
 
   async function load() {
     if (loaded.value) return
     try {
       const fromDb = await getGames()
+      const ids = new Set(fromDb.map(g => g.id))
       // Merge por id: BD pisa al estático si coinciden; ids nuevos se agregan
       const merged = [...games.value]
       for (const dbGame of fromDb) {
@@ -24,6 +26,7 @@ export const useGamesStore = defineStore('games', () => {
         }
       }
       games.value = merged
+      dbIds.value = ids
       loaded.value = true
     } catch (err) {
       console.warn('[games store] Error cargando desde BD, usando catálogo estático:', err)
@@ -35,5 +38,5 @@ export const useGamesStore = defineStore('games', () => {
     return games.value.find(g => g.id === gameId)
   }
 
-  return { games, loaded, load, byId }
+  return { games, loaded, dbIds, load, byId }
 })
