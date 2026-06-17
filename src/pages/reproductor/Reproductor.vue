@@ -167,7 +167,7 @@ function exit() {
           <canvas
             ref="gameCanvas"
             v-show="hasRealGame"
-            style="max-width:100%;height:auto;display:block;"
+            style="height:100%;width:auto;max-width:100%;display:block;margin:0 auto;"
           />
           <div v-if="paused" class="crt-content" style="background:rgba(0,0,0,0.6);z-index:5;">
             <div>
