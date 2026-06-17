@@ -12,11 +12,17 @@ const search = ref('')
 const activecat = ref('TODOS')
 
 const filtered = computed(() => {
-  return gamesStore.games.filter(g => {
-    const matchCat = activecat.value === 'TODOS' || g.cat === activecat.value
-    const matchSearch = g.title.toLowerCase().includes(search.value.toLowerCase())
-    return matchCat && matchSearch
-  })
+  return gamesStore.games
+    .filter(g => {
+      const matchCat = activecat.value === 'TODOS' || g.cat === activecat.value
+      const matchSearch = g.title.toLowerCase().includes(search.value.toLowerCase())
+      return matchCat && matchSearch
+    })
+    .sort((a, b) => {
+      const aInDb = gamesStore.dbIds.has(a.id) ? 0 : 1
+      const bInDb = gamesStore.dbIds.has(b.id) ? 0 : 1
+      return aInDb - bInDb
+    })
 })
 
 function goDetail(id: string) {
