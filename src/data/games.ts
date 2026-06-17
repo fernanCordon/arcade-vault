@@ -11,17 +11,17 @@ export interface Game {
 }
 
 export const GAMES: Game[] = [
-  {
-    id: 'bricks',
-    title: 'BRICK BREAKER',
-    short: 'Rompe todos los bloques',
-    long: 'Controla la paleta y destruye todos los bloques antes de que la bola caiga. Gana vidas extra con combos.',
-    cat: 'ARCADE',
-    cover: 'cover-bricks',
-    color: 'cyan',
-    best: 48200,
-    plays: '12.4K',
-  },
+  // {
+  //   id: 'bricks',
+  //   title: 'BRICK BREAKER',
+  //   short: 'Rompe todos los bloques',
+  //   long: 'Controla la paleta y destruye todos los bloques antes de que la bola caiga. Gana vidas extra con combos.',
+  //   cat: 'ARCADE',
+  //   cover: 'cover-bricks',
+  //   color: 'cyan',
+  //   best: 48200,
+  //   plays: '12.4K',
+  // },
   // {
   //   id: 'tetro',
   //   title: 'TETRIS STACK',
