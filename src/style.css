@@ -25,19 +25,35 @@
   --skin-glow-blur: 0;
   --skin-enemy:     #ff006e;
   --skin-neutral:   #ffffff;
+  /* Tetris — color por tipo de pieza (I,O,T,S,Z,J,L) */
+  --skin-piece-I:   #4dd0e1;
+  --skin-piece-O:   #ffd54f;
+  --skin-piece-T:   #ba68c8;
+  --skin-piece-S:   #81c784;
+  --skin-piece-Z:   #e57373;
+  --skin-piece-J:   #90caf9;
+  --skin-piece-L:   #ffb74d;
 }
 
 [data-skin="neon"] {
   --skin-bg:        #000000;
   --skin-grid:      rgba(0, 245, 255, 0.07);
   --skin-line:      rgba(0, 245, 255, 0.12);
-  --skin-primary:   #ff006e;
+  --skin-primary:   #00f5ff;
   --skin-secondary: #ff006e;
   --skin-accent:    #f5ff00;
   --skin-glow:      #00f5ff;
   --skin-glow-blur: 10;
   --skin-enemy:     #ff006e;
   --skin-neutral:   #00f5ff;
+  /* Tetris — paleta neón saturada por tipo de pieza */
+  --skin-piece-I:   #00f5ff;
+  --skin-piece-O:   #f5ff00;
+  --skin-piece-T:   #c400ff;
+  --skin-piece-S:   #00ff88;
+  --skin-piece-Z:   #ff006e;
+  --skin-piece-J:   #2979ff;
+  --skin-piece-L:   #ff8a00;
 }
 
 [data-skin="retro"] {
@@ -51,6 +67,14 @@
   --skin-glow-blur: 6;
   --skin-enemy:     #ffaa00;
   --skin-neutral:   #c8e060;
+  /* Tetris — fósforo CRT: verdes escalonados + ámbar de acento */
+  --skin-piece-I:   #d4f000;
+  --skin-piece-O:   #ffaa00;
+  --skin-piece-T:   #b4d200;
+  --skin-piece-S:   #7ab300;
+  --skin-piece-Z:   #ff8800;
+  --skin-piece-J:   #9bbf00;
+  --skin-piece-L:   #c8e060;
 }
 
 @theme inline {

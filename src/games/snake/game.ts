@@ -1,3 +1,5 @@
+import { getSkinPalette } from '../skins'
+
 export interface SnakeCallbacks {
   onScoreChange: (score: number) => void
   onLifeLost:    (lives: number) => void
@@ -84,10 +86,12 @@ function spawnFruit() {
 function draw() {
   if (!canvas || !ctx) return
 
-  ctx.fillStyle = '#000'
+  const palette = getSkinPalette()
+
+  ctx.fillStyle = palette.bg
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)'
+  ctx.strokeStyle = palette.grid
   ctx.lineWidth = 0.5
   for (let c = 0; c <= COLS; c++) {
     ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, canvas.height); ctx.stroke()
@@ -99,30 +103,32 @@ function draw() {
   if (fruit && imgReady && img) {
     ctx.drawImage(img, fruit.sx, fruit.sy, fruit.sw, fruit.sh, fruit.x * CELL, fruit.y * CELL, CELL, CELL)
   } else if (fruit) {
-    ctx.fillStyle = '#39ff14'
+    ctx.fillStyle = palette.secondary
     ctx.fillRect(fruit.x * CELL + 8, fruit.y * CELL + 8, CELL - 16, CELL - 16)
   }
 
   snake.forEach((seg, i) => {
     if (i === 0) {
-      ctx!.fillStyle = '#00ffcc'
-      ctx!.shadowColor = '#00ffcc'
+      ctx!.fillStyle = palette.primary
+      ctx!.shadowColor = palette.glow
       ctx!.shadowBlur = 12
     } else {
-      ctx!.fillStyle = '#39ff14'
-      ctx!.shadowColor = '#39ff14'
+      ctx!.fillStyle = palette.secondary
+      ctx!.shadowColor = palette.secondary
       ctx!.shadowBlur = 6
     }
     ctx!.fillRect(seg.x * CELL + 1, seg.y * CELL + 1, CELL - 2, CELL - 2)
   })
   ctx.shadowBlur = 0
 
-  ctx.strokeStyle = 'rgba(57,255,20,0.4)'
+  ctx.strokeStyle = palette.secondary
+  ctx.globalAlpha = 0.4
   ctx.lineWidth = 2
-  ctx.shadowColor = '#39ff14'
+  ctx.shadowColor = palette.secondary
   ctx.shadowBlur = 8
   ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2)
   ctx.shadowBlur = 0
+  ctx.globalAlpha = 1
 }
 
 function tick() {

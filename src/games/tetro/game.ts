@@ -1,3 +1,5 @@
+import { getSkinPalette, type SkinPalette } from '../skins'
+
 export interface TetroCallbacks {
   onScoreChange: (score: number) => void
   onLifeLost: (lives: number) => void
@@ -19,16 +21,8 @@ const COLS = 10
 const ROWS = 20
 const BLOCK = 30
 
-const COLORS = [
-  null,
-  '#4dd0e1', // I - cyan
-  '#ffd54f', // O - yellow
-  '#ba68c8', // T - purple
-  '#81c784', // S - green
-  '#e57373', // Z - red
-  '#90caf9', // J - pale blue
-  '#ffb74d', // L - orange
-]
+// Los colores de pieza (I,O,T,S,Z,J,L) provienen ahora de los tokens
+// --skin-piece-* vía getSkinPalette().pieces, refrescados en cada render.
 
 const PIECES = [
   null,
@@ -50,6 +44,7 @@ let ctx: CanvasRenderingContext2D | null = null
 let nextCanvas: HTMLCanvasElement | null = null
 let nextCtx: CanvasRenderingContext2D | null = null
 let cbs: TetroCallbacks | null = null
+let palette: SkinPalette = getSkinPalette()
 
 let board: number[][]
 let current: { type: number; shape: number[][]; x: number; y: number }
@@ -192,7 +187,7 @@ function drawBlock(
   alpha?: number
 ) {
   if (!colorIndex) return
-  const color = COLORS[colorIndex] as string
+  const color = palette.pieces[colorIndex] as string
   context.globalAlpha = alpha ?? 1
   context.fillStyle = color
   context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2)
@@ -203,7 +198,7 @@ function drawBlock(
 
 function drawGrid() {
   if (!ctx || !mainCanvas) return
-  ctx.strokeStyle = 'rgba(255,255,255,0.05)'
+  ctx.strokeStyle = palette.grid
   ctx.lineWidth = 0.5
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath()
@@ -217,8 +212,10 @@ function drawGrid() {
     ctx.lineTo(COLS * BLOCK, r * BLOCK)
     ctx.stroke()
   }
-  // bordes laterales
-  ctx.strokeStyle = 'rgba(0,245,255,0.25)'
+  // bordes laterales — acento del marco con el color primario del skin
+  ctx.save()
+  ctx.globalAlpha = 0.25
+  ctx.strokeStyle = palette.primary
   ctx.lineWidth = 1
   ctx.beginPath()
   ctx.moveTo(0.5, 0)
@@ -228,10 +225,12 @@ function drawGrid() {
   ctx.moveTo(COLS * BLOCK - 0.5, 0)
   ctx.lineTo(COLS * BLOCK - 0.5, ROWS * BLOCK)
   ctx.stroke()
+  ctx.restore()
 }
 
 function draw() {
   if (!ctx || !mainCanvas) return
+  palette = getSkinPalette()
   ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
   drawGrid()
 

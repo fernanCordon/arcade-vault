@@ -13,6 +13,11 @@ export interface SkinPalette {
   glowBlur:  number
   enemy:     string
   neutral:   string
+  /**
+   * Tetris — color por tipo de pieza, indexable por el valor de celda 1..7
+   * (I,O,T,S,Z,J,L). El índice 0 es `null` (celda vacía).
+   */
+  pieces:    (string | null)[]
   // Campos adicionales se añaden por juego según necesidad
 }
 
@@ -34,5 +39,15 @@ export function getSkinPalette(): SkinPalette {
     glowBlur:  Number(get('--skin-glow-blur')) || 0,
     enemy:     get('--skin-enemy'),
     neutral:   get('--skin-neutral'),
+    pieces:    [
+      null,
+      get('--skin-piece-I'),
+      get('--skin-piece-O'),
+      get('--skin-piece-T'),
+      get('--skin-piece-S'),
+      get('--skin-piece-Z'),
+      get('--skin-piece-J'),
+      get('--skin-piece-L'),
+    ],
   }
 }

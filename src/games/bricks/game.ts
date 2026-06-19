@@ -1,4 +1,21 @@
 import spritesheetUrl from '../../../references/started-games/arkanoid/assets/spritesheet-breakout.png'
+import { getSkinPalette, type SkinPalette } from '../skins'
+
+// ── Skins ────────────────────────────────────────────────────────────────────
+// LIMITACIÓN: los bloques, la paleta y la bola provienen de un spritesheet PNG
+// (spritesheet-breakout.png). La FORMA está fijada por el PNG y no puede cambiarse
+// sin assets alternativos. Lo que sí controla el agente skin-design es el TINTE:
+// para skins no-Classic se redibuja cada sprite y se aplica un overlay teñido con
+// globalCompositeOperation='source-atop' (afecta solo a los píxeles ya dibujados),
+// modulando el color con palette.primary / palette.secondary. El fondo, el texto
+// y los overlays de mensaje sí usan tokens --skin-* directamente.
+let palette: SkinPalette = {
+  bg: '#000', grid: '', line: '', primary: '#00ffcc', secondary: '#39ff14',
+  accent: '#ff006e', glow: '#00ffcc', glowBlur: 0, enemy: '#ff006e', neutral: '#ffffff',
+  pieces: [],
+}
+// Classic = sin data-skin: respeta los colores originales del PNG (sin teñir).
+let tintEnabled = false
 
 export interface BricksCallbacks {
   onScoreChange: (score: number) => void
@@ -134,11 +151,23 @@ function drawFrame(context: CanvasRenderingContext2D, frame: SpriteFrame, x: num
   context.drawImage(ssImg, frame.sx, frame.sy, frame.sw, frame.sh, x, y, w, h)
 }
 
-function drawSprite(context: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number) {
+function drawSprite(context: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number, tint?: string) {
   if (!ssLoaded || !ssImg) return
   const sp = name.startsWith('block_') ? BLOCK_SPRITES[name.slice(6)] : SPRITES[name]
   if (!sp) return
   context.drawImage(ssImg, sp.sx, sp.sy, sp.sw, sp.sh, x, y, w, h)
+  // Overlay teñido: 'source-atop' restringe el relleno a los píxeles del sprite ya
+  // dibujado, conservando su forma y sombras pero modulando el color del skin.
+  if (tintEnabled && tint) {
+    const prevOp = context.globalCompositeOperation
+    const prevAlpha = context.globalAlpha
+    context.globalCompositeOperation = 'source-atop'
+    context.globalAlpha = 0.55
+    context.fillStyle = tint
+    context.fillRect(x, y, w, h)
+    context.globalCompositeOperation = prevOp
+    context.globalAlpha = prevAlpha
+  }
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -293,21 +322,28 @@ function drawOverlay(message: string) {
   if (!ctx || !_canvas) return
   ctx.fillStyle = 'rgba(0,0,0,0.6)'
   ctx.fillRect(0, 0, _canvas.width, _canvas.height)
-  ctx.fillStyle = '#fff'
+  ctx.fillStyle = palette.neutral
   ctx.font = 'bold 48px monospace'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillText(message, _canvas.width / 2, _canvas.height / 2)
 }
 
+// El tinte de cada bloque alterna primary/secondary según su fila, para mantener
+// variedad cromática dentro de la paleta del skin activo.
+function blockTint(blockY: number): string {
+  const row = Math.round((blockY - BLOCKS_ORIGIN_Y) / BLOCK_H)
+  return row % 2 === 0 ? palette.primary : palette.secondary
+}
+
 function draw() {
   if (!ctx || !_canvas) return
 
-  ctx.fillStyle = '#000'
+  ctx.fillStyle = palette.bg
   ctx.fillRect(0, 0, _canvas.width, _canvas.height)
 
   for (const block of blocks)
-    if (block.alive) drawSprite(ctx, 'block_' + block.color, block.x, block.y, block.w, block.h)
+    if (block.alive) drawSprite(ctx, 'block_' + block.color, block.x, block.y, block.w, block.h, blockTint(block.y))
 
   for (const exp of explosions) {
     const frameIndex = Math.min(Math.floor(exp.elapsed / EXPLOSION_DURATION * 4), 3)
@@ -315,13 +351,13 @@ function draw() {
     if (frames) drawFrame(ctx, frames[frameIndex], exp.x, exp.y, exp.w, exp.h)
   }
 
-  drawSprite(ctx, 'paddle', paddle.x, paddle.y, paddle.w, paddle.h)
-  drawSprite(ctx, 'ball',   ball.x,   ball.y,   ball.w,   ball.h)
+  drawSprite(ctx, 'paddle', paddle.x, paddle.y, paddle.w, paddle.h, palette.primary)
+  drawSprite(ctx, 'ball',   ball.x,   ball.y,   ball.w,   ball.h,   palette.neutral)
 
   if (gameState === 'playing') {
     const ballSize = 16
     const ballSpacing = 4
-    ctx.fillStyle = '#fff'
+    ctx.fillStyle = palette.neutral
     ctx.font = 'bold 18px monospace'
     ctx.textAlign = 'left'
     ctx.textBaseline = 'top'
@@ -330,7 +366,7 @@ function draw() {
     ctx.fillText('Nivel: ' + currentLevel, _canvas.width / 2, 10)
     for (let i = 0; i < lives; i++) {
       const bx = _canvas.width - 10 - (lives - i) * (ballSize + ballSpacing)
-      drawSprite(ctx, 'ball', bx, 10, ballSize, ballSize)
+      drawSprite(ctx, 'ball', bx, 10, ballSize, ballSize, palette.neutral)
     }
   }
 
@@ -342,6 +378,9 @@ function loop(timestamp: number) {
   if (lastTime === null) lastTime = timestamp
   const dt = Math.min((timestamp - lastTime) / 1000, 0.05)
   lastTime = timestamp
+  palette = getSkinPalette()
+  // Classic (sin data-skin) deja el PNG con sus colores originales; el resto tiñe.
+  tintEnabled = !!document.documentElement.dataset.skin && document.documentElement.dataset.skin !== 'classic'
   update(dt)
   draw()
   if (gameState !== 'gameover' && gameState !== 'win') {
