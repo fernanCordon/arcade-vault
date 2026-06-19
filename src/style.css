@@ -146,8 +146,7 @@
   .cover-asteroids::before { content:"▲"; position:absolute; left:47%; top:43%; color:var(--cyan); font-size:20px; text-shadow:0 0 10px var(--cyan),0 0 22px var(--cyan); }
   .cover-rana { background:linear-gradient(180deg,#001f2a,#0a0a18); }
   .cover-rana::after { content:""; position:absolute; inset:0; background: repeating-linear-gradient(0deg,rgba(0,245,255,0.18) 0 20px,transparent 20px 40px), radial-gradient(circle at 50% 55%,var(--green) 0 14px,transparent 15px); filter:drop-shadow(0 0 8px rgba(0,255,136,0.5)); }
-  .cover-duelo { background:#0a0a18; }
-  .cover-duelo::after { content:""; position:absolute; inset:0; background: repeating-linear-gradient(0deg,var(--ink) 0 10px,transparent 10px 20px) 50% 0/2px 100% no-repeat, linear-gradient(var(--cyan),var(--cyan)) 6% 35%/6px 30% no-repeat, linear-gradient(var(--magenta),var(--magenta)) 88% 35%/6px 30% no-repeat, radial-gradient(circle at 60% 60%,var(--yellow) 0 5px,transparent 6px); filter:drop-shadow(0 0 6px rgba(0,245,255,0.4)); }
+
 
   .av-hall { max-width:1200px; margin:32px auto 80px; padding:0 32px; }
   .hall-head { text-align:center; margin-bottom:28px; }

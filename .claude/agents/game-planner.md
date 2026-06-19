@@ -64,7 +64,7 @@ Recomienda **1 juego** (el de mayor total, o justifica si eliges otro). Incluye:
   title: 'TÍTULO EN MAYÚS',
   short: 'Tagline breve',
   long: 'Descripción de 1–2 frases para la ficha de detalle.',
-  cat: 'ARCADE' | 'PUZZLE' | 'SHOOTER' | 'VERSUS',
+  cat: 'ARCADE' | 'PUZZLE' | 'SHOOTER' | 'MAZE',
   cover: 'cover-nombreid',     // clase CSS a definir en style.css
   color: 'cyan' | 'magenta' | 'yellow' | 'green',
   best: 0,

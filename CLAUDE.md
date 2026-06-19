@@ -79,7 +79,7 @@ src/
 **`games.ts`** — catálogo estático de respaldo (fallback sin red):
 - `Game` interface: `id`, `title`, `short`, `long`, `cat`, `cover`, `color`, `best`, `plays`
 - `GAMES: Game[]` — juegos activos (algunos comentados si aún no están integrados): `glot`, `invaders`, `rana`, `duelo`
-- `CATS` — categorías: `TODOS | ARCADE | PUZZLE | SHOOTER | VERSUS`
+- `CATS` — categorías: `TODOS | ARCADE | PUZZLE | SHOOTER | MAZE`
 
 **`user.ts`** — persistencia mínima:
 - `getUser()` / `saveUser()` — lee y escribe `{ name: string }` en `localStorage` bajo la clave `av_user`

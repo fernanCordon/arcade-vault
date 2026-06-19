@@ -3,7 +3,7 @@ export interface Game {
   title: string
   short: string
   long: string
-  cat: 'ARCADE' | 'PUZZLE' | 'SHOOTER' | 'VERSUS'
+  cat: 'ARCADE' | 'PUZZLE' | 'SHOOTER' | 'MAZE'
   cover: string
   color: 'cyan' | 'magenta' | 'yellow' | 'green'
   best: number
@@ -71,22 +71,11 @@ export const GAMES: Game[] = [
     title: 'RANA VELOZ',
     short: 'Cruza sin ser aplastado',
     long: 'Salta de liana en liana, esquiva camiones y cruza el río sobre troncos que se mueven. El tiempo no espera.',
-    cat: 'ARCADE',
+    cat: 'MAZE',
     cover: 'cover-rana',
     color: 'green',
     best: 22100,
     plays: '7.6K',
-  },
-  {
-    id: 'duelo',
-    title: 'DUELO LASER',
-    short: '1v1 de reflejos',
-    long: 'Dos jugadores, dos pistolas de luz. El primero en fallar pierde. Pura velocidad de reacción.',
-    cat: 'VERSUS',
-    cover: 'cover-duelo',
-    color: 'magenta',
-    best: 0,
-    plays: '3.1K',
   },
   // {
   //   id: 'asteroids',
@@ -101,4 +90,4 @@ export const GAMES: Game[] = [
   // },
 ]
 
-export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'VERSUS']
+export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'MAZE']
