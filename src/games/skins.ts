@@ -18,6 +18,19 @@ export interface SkinPalette {
    * (I,O,T,S,Z,J,L). El índice 0 es `null` (celda vacía).
    */
   pieces:    (string | null)[]
+  /**
+   * Rana Veloz — colores de zonas y entidades del tablero.
+   * `enemy`/`primary`/`secondary`/`neutral` del nivel raíz cubren rana, coches,
+   * tortugas y texto; estos campos cubren las zonas de fondo y el tronco.
+   */
+  rana?: {
+    grass: string
+    goal:  string
+    water: string
+    road:  string
+    log:   string
+    log2:  string
+  }
   // Campos adicionales se añaden por juego según necesidad
 }
 
@@ -49,5 +62,13 @@ export function getSkinPalette(): SkinPalette {
       get('--skin-piece-J'),
       get('--skin-piece-L'),
     ],
+    rana: {
+      grass: get('--skin-rana-grass'),
+      goal:  get('--skin-rana-goal'),
+      water: get('--skin-rana-water'),
+      road:  get('--skin-rana-road'),
+      log:   get('--skin-rana-log'),
+      log2:  get('--skin-rana-log2'),
+    },
   }
 }

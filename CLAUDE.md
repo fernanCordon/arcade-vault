@@ -230,3 +230,9 @@ Reset mínimo: `box-sizing`, altura full, tipografía base sobre `--mono`.
 ## Skills
 Para tareas de diseño frontend, carga y aplica 
 ~/.claude/skills/frontend-design/SKILL.md
+
+## Comandos de proyecto (`.claude/commands/`)
+
+| Comando | Cuándo usarlo |
+|---|---|
+| `/spec-impl-game <NN-spec-name>` | Implementa un spec aprobado (igual que `/spec-impl`) y, al terminar el último paso, detona el agente `skin-design` para tematizar el juego con las 3 skins (Classic/Neon/Retro). Solo lanza `skin-design` si el spec tiene estado "Aprobado". |
