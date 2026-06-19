@@ -33,6 +33,13 @@
   --skin-piece-Z:   #e57373;
   --skin-piece-J:   #90caf9;
   --skin-piece-L:   #ffb74d;
+  /* Rana Veloz — zonas y entidades (look naturalista clásico) */
+  --skin-rana-grass:  #1a3a1a;   /* hierba / zonas seguras */
+  --skin-rana-goal:   #1a4a1a;   /* franja de metas */
+  --skin-rana-water:  #0a2a5a;   /* río */
+  --skin-rana-road:   #111111;   /* asfalto */
+  --skin-rana-log:    #7a4a1a;   /* tronco */
+  --skin-rana-log2:   #5a3010;   /* veta del tronco */
 }
 
 [data-skin="neon"] {
@@ -54,6 +61,13 @@
   --skin-piece-Z:   #ff006e;
   --skin-piece-J:   #2979ff;
   --skin-piece-L:   #ff8a00;
+  /* Rana Veloz — zonas neón saturadas */
+  --skin-rana-grass:  #06121a;
+  --skin-rana-goal:   #052a1a;
+  --skin-rana-water:  #001a33;
+  --skin-rana-road:   #0a0a12;
+  --skin-rana-log:    #3a2a55;
+  --skin-rana-log2:   #c400ff;
 }
 
 [data-skin="retro"] {
@@ -75,6 +89,13 @@
   --skin-piece-Z:   #ff8800;
   --skin-piece-J:   #9bbf00;
   --skin-piece-L:   #c8e060;
+  /* Rana Veloz — fósforo CRT verde/ámbar */
+  --skin-rana-grass:  #0d1a00;
+  --skin-rana-goal:   #142200;
+  --skin-rana-water:  #001a14;
+  --skin-rana-road:   #0a0a00;
+  --skin-rana-log:    #4a3a00;
+  --skin-rana-log2:   #ffaa00;
 }
 
 @theme inline {
