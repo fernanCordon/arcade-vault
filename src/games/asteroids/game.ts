@@ -1,3 +1,5 @@
+import { getSkinPalette, type SkinPalette } from '../skins'
+
 export interface AsteroidsCallbacks {
   onScoreChange: (score: number) => void
   onLifeLost: (lives: number) => void
@@ -25,6 +27,25 @@ const RADII = [0, 16, 30, 50]
 const SPEEDS = [0, 85, 55, 32]
 const POINTS = [0, 100, 50, 20]
 
+// Aplica un alpha a un color de paleta. Soporta #rgb, #rrggbb y rgb()/rgba().
+const withAlpha = (color: string, alpha: number): string => {
+  const c = color.trim()
+  if (c.startsWith('#')) {
+    let hex = c.slice(1)
+    if (hex.length === 3) hex = hex.split('').map(h => h + h).join('')
+    const r = parseInt(hex.slice(0, 2), 16)
+    const g = parseInt(hex.slice(2, 4), 16)
+    const b = parseInt(hex.slice(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  const m = c.match(/rgba?\(([^)]+)\)/)
+  if (m) {
+    const [r, g, b] = m[1].split(',').map(s => s.trim())
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  return c
+}
+
 const wrap = (v: number, max: number) => ((v % max) + max) % max
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
   Math.hypot(a.x - b.x, a.y - b.y)
@@ -36,6 +57,9 @@ const randInt = (min: number, max: number) => Math.floor(rand(min, max + 1))
 let canvas: HTMLCanvasElement | null = null
 let ctx: CanvasRenderingContext2D | null = null
 let cbs: AsteroidsCallbacks | null = null
+
+// Paleta de skin activa — se relee al inicio de cada frame en draw().
+let palette: SkinPalette = getSkinPalette()
 
 let rafId = 0
 let lastTime: number | null = null
@@ -92,10 +116,13 @@ class Bullet {
   }
 
   draw() {
-    ctx!.fillStyle = '#fff'
+    ctx!.shadowColor = palette.glow
+    ctx!.shadowBlur  = palette.glowBlur
+    ctx!.fillStyle = palette.neutral
     ctx!.beginPath()
     ctx!.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
     ctx!.fill()
+    ctx!.shadowBlur = 0
   }
 }
 
@@ -144,7 +171,9 @@ class Asteroid {
     ctx!.save()
     ctx!.translate(this.x, this.y)
     ctx!.rotate(this.rot)
-    ctx!.strokeStyle = '#fff'
+    ctx!.shadowColor = palette.glow
+    ctx!.shadowBlur  = palette.glowBlur
+    ctx!.strokeStyle = palette.neutral
     ctx!.lineWidth = 1.5
     ctx!.lineJoin = 'round'
     ctx!.beginPath()
@@ -185,12 +214,12 @@ class PowerUp {
     ctx!.save()
     ctx!.translate(this.x, this.y)
     ctx!.rotate(Math.PI / 4)
-    ctx!.strokeStyle = '#0ff'
+    ctx!.strokeStyle = palette.primary
     ctx!.lineWidth = 2
     const r = this.radius * pulse
     ctx!.strokeRect(-r, -r, r * 2, r * 2)
     ctx!.restore()
-    ctx!.fillStyle = '#0ff'
+    ctx!.fillStyle = palette.primary
     ctx!.font = 'bold 12px monospace'
     ctx!.textAlign = 'center'
     ctx!.textBaseline = 'middle'
@@ -272,7 +301,9 @@ class Ship {
     ctx!.save()
     ctx!.translate(this.x, this.y)
     ctx!.rotate(this.angle)
-    ctx!.strokeStyle = '#fff'
+    ctx!.shadowColor = palette.glow
+    ctx!.shadowBlur  = palette.glowBlur
+    ctx!.strokeStyle = palette.neutral
     ctx!.lineWidth = 1.5
     ctx!.lineJoin = 'round'
 
@@ -289,7 +320,9 @@ class Ship {
       ctx!.moveTo(-8, -4)
       ctx!.lineTo(-8 - rand(6, 14), 0)
       ctx!.lineTo(-8, 4)
-      ctx!.strokeStyle = 'rgba(255, 130, 0, 0.85)'
+      ctx!.shadowColor = palette.accent
+      ctx!.shadowBlur  = palette.glowBlur * 1.5
+      ctx!.strokeStyle = withAlpha(palette.accent, 0.85)
       ctx!.stroke()
     }
 
@@ -321,7 +354,7 @@ class Particle {
 
   draw() {
     const alpha = this.ttl / this.life
-    ctx!.strokeStyle = `rgba(255,255,255,${alpha.toFixed(2)})`
+    ctx!.strokeStyle = withAlpha(palette.neutral, Number(alpha.toFixed(2)))
     ctx!.lineWidth = 1
     ctx!.beginPath()
     ctx!.moveTo(this.x, this.y)
@@ -472,7 +505,7 @@ function drawLifeIcon(x: number, y: number) {
   ctx!.save()
   ctx!.translate(x, y)
   ctx!.rotate(-Math.PI / 2)
-  ctx!.strokeStyle = '#fff'
+  ctx!.strokeStyle = palette.neutral
   ctx!.lineWidth = 1.2
   ctx!.lineJoin = 'round'
   ctx!.beginPath()
@@ -486,7 +519,7 @@ function drawLifeIcon(x: number, y: number) {
 }
 
 function drawHUD() {
-  ctx!.fillStyle = '#fff'
+  ctx!.fillStyle = palette.neutral
   ctx!.font = '15px monospace'
 
   ctx!.textAlign = 'left'
@@ -499,13 +532,15 @@ function drawHUD() {
 
   if (ship.tripleShot > 0) {
     ctx!.textAlign = 'left'
-    ctx!.fillStyle = '#0ff'
+    ctx!.fillStyle = palette.primary
     ctx!.fillText(`3x  ${ship.tripleShot.toFixed(1)}s`, 14, 46)
   }
 }
 
 function draw() {
-  ctx!.fillStyle = '#000'
+  // Relee la skin activa cada frame por si el usuario la cambia en runtime.
+  palette = getSkinPalette()
+  ctx!.fillStyle = palette.bg
   ctx!.fillRect(0, 0, W, H)
 
   particles.forEach(p => p.draw())

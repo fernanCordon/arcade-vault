@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
 import { useGamesStore } from '../../stores/games'
@@ -44,7 +44,28 @@ const hasRealGame = ref(false)
 let gameModule: GameModule | null = null
 let mockTimer: ReturnType<typeof setInterval> | null = null
 
+type Skin = 'classic' | 'neon' | 'retro'
+const SKINS: { id: Skin; label: string }[] = [
+  { id: 'classic', label: 'CLASSIC' },
+  { id: 'neon',    label: 'NEON' },
+  { id: 'retro',   label: 'RETRO' },
+]
+const activeSkin = ref<Skin>((localStorage.getItem('av_skin') as Skin) ?? 'classic')
+
+function applySkin(skin: Skin) {
+  activeSkin.value = skin
+  localStorage.setItem('av_skin', skin)
+  if (skin === 'classic') {
+    delete document.documentElement.dataset.skin
+  } else {
+    document.documentElement.dataset.skin = skin
+  }
+}
+
+watch(activeSkin, () => {}, { immediate: false })  // keep reactivity
+
 onMounted(async () => {
+  applySkin(activeSkin.value)
   const id = route.params.id as string
   try {
     const mod = await import(`../../games/${id}/game.ts`)
@@ -149,6 +170,16 @@ function exit() {
           </div>
         </div>
         <div class="hud-actions">
+          <div class="skin-picker">
+            <span class="skin-label">SKIN</span>
+            <button
+              v-for="s in SKINS"
+              :key="s.id"
+              class="skin-btn"
+              :class="{ active: activeSkin === s.id }"
+              @click="applySkin(s.id)"
+            >{{ s.label }}</button>
+          </div>
           <button class="btn yellow" @click="togglePause">{{ paused ? 'REANUDAR' : 'PAUSA' }}</button>
           <button class="btn magenta" @click="end">FIN</button>
           <button class="btn ghost" @click="exit">SALIR</button>
