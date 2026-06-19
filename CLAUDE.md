@@ -219,6 +219,12 @@ Reset mínimo: `box-sizing`, altura full, tipografía base sobre `--mono`.
 - `≤900px` — `.av-detail` pasa a columna única
 - `≤720px` — padding reducido en grid, hero, filters, hall; podium en columna; tabla de hall con columnas ajustadas
 
+## Agentes de proyecto (`.claude/agents/`)
+
+| Agente | Cuándo usarlo |
+|---|---|
+| `game-planner` | Planear qué nuevo juego añadir a la plataforma. Propone 1–3 candidatos, los evalúa (Diversidad de categorías · Facilidad en Canvas 2D · Reconocimiento clásico) y recomienda 1. Guarda el historial en `references/game-suggestions-todo.md`. |
+
 ## Skills
 Para tareas de diseño frontend, carga y aplica 
 ~/.claude/skills/frontend-design/SKILL.md
