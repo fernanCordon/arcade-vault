@@ -1,6 +1,6 @@
 # SPEC — Rana Veloz: integración core del juego (Vue)
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** 07-leaderboard-supabase
 > **Fecha:** 2026-06-19
 > **Objetivo:** Implementar Rana Veloz (canvas puro, construido desde cero) como juego jugable en Arcade Vault con ID `rana`, exponiendo la interfaz `RanaGame` que `Reproductor.vue` consume para conectar score, vidas, nivel y game over con el HUD Vue y el reproductor genérico.
