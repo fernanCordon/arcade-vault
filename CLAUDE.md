@@ -224,6 +224,8 @@ Reset mínimo: `box-sizing`, altura full, tipografía base sobre `--mono`.
 | Agente | Cuándo usarlo |
 |---|---|
 | `game-planner` | Planear qué nuevo juego añadir a la plataforma. Propone 1–3 candidatos, los evalúa (Diversidad de categorías · Facilidad en Canvas 2D · Reconocimiento clásico) y recomienda 1. Guarda el historial en `references/game-suggestions-todo.md`. |
+| `game-jam` | Dado un tema, diseña UN juego y genera dos specs completos (`.md`, formato specs/08–10) en `specs/game-jam/<game-id>/`. Solo produce specs, no implementa. Aislado: no toca `game-suggestions-todo.md` ni coordina con `game-planner`. |
+| `skin-design` | Aplicar las tres skins (Classic, Neon, Retro) a un juego concreto. Recibe un `id` de juego, extrae sus colores hardcodeados al contrato de tokens `--skin-*` en `style.css` y al helper compartido `src/games/skins.ts`, y actualiza el registro `references/game-with-themes.md`. Nunca toca otros juegos. |
 
 ## Skills
 Para tareas de diseño frontend, carga y aplica 
