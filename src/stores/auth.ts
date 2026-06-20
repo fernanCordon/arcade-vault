@@ -32,9 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(email: string, password: string, displayName: string) {
     const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) throw new Error(error.message)
-    if (data.user) {
-      await supabase.auth.updateUser({ data: { displayName } })
-    }
+    if (!data.session) throw new Error('Revisa tu email y confirma tu cuenta para continuar.')
+    await supabase.auth.updateUser({ data: { displayName } })
   }
 
   async function login(email: string, password: string) {
