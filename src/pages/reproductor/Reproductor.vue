@@ -3,10 +3,12 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
 import { useGamesStore } from '../../stores/games'
+import { useAuthStore } from '../../stores/auth'
 import { getUser } from '../../data/user'
 import { submitScore } from '../../lib/scores'
 
 const gamesStore = useGamesStore()
+const authStore = useAuthStore()
 
 interface GameCallbacks {
   onScoreChange: (score: number) => void
@@ -223,23 +225,31 @@ function exit() {
         <div class="final-label">PUNTUACIÓN FINAL</div>
         <div class="final">{{ score.toLocaleString('es-ES') }}</div>
 
-        <div v-if="!saved" class="input-row">
-          <input
-            v-model="playerName"
-            type="text"
-            placeholder="TUS INICIALES"
-            maxlength="10"
-            :disabled="submitting"
-            @input="playerName = (playerName as string).toUpperCase().slice(0, 10)"
-          />
-          <button
-            class="btn yellow"
-            :disabled="submitting"
-            @click="saveScore"
-          >{{ submitting ? 'GUARDANDO…' : 'GUARDAR PUNTUACIÓN' }}</button>
-        </div>
-        <div v-if="submitError" class="mono" style="color:var(--magenta);font-size:11px;margin-top:6px;">{{ submitError }}</div>
-        <div v-if="saved" class="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+        <template v-if="authStore.isLoggedIn">
+          <div v-if="!saved" class="input-row">
+            <input
+              v-model="playerName"
+              type="text"
+              placeholder="TUS INICIALES"
+              maxlength="10"
+              :disabled="submitting"
+              @input="playerName = (playerName as string).toUpperCase().slice(0, 10)"
+            />
+            <button
+              class="btn yellow"
+              :disabled="submitting"
+              @click="saveScore"
+            >{{ submitting ? 'GUARDANDO…' : 'GUARDAR PUNTUACIÓN' }}</button>
+          </div>
+          <div v-if="submitError" class="mono" style="color:var(--magenta);font-size:11px;margin-top:6px;">{{ submitError }}</div>
+          <div v-if="saved" class="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+        </template>
+        <template v-else>
+          <div class="mono" style="color:var(--ink-dim);font-size:11px;margin:12px 0 6px;text-align:center;">
+            Inicia sesión para guardar tu puntuación
+          </div>
+          <button class="btn ghost" style="width:100%;" @click="router.push('/auth')">INICIAR SESIÓN</button>
+        </template>
 
         <div class="actions">
           <button class="btn" @click="restart">JUGAR DE NUEVO</button>

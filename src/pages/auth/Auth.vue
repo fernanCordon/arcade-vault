@@ -3,18 +3,43 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Nav from '../../components/Nav.vue'
 import { saveUser } from '../../data/user'
+import { useAuthStore } from '../../stores/auth'
 
 const router = useRouter()
+const store = useAuthStore()
 const tab = ref<'login' | 'registro'>('login')
 
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const error = ref('')
+const loading = ref(false)
 
-function submit() {
-  const n = name.value.trim() || email.value.split('@')[0] || 'JUGADOR'
-  saveUser({ name: n.toUpperCase() })
-  router.push('/')
+async function submit() {
+  error.value = ''
+  loading.value = true
+  try {
+    if (tab.value === 'registro') {
+      const displayName = name.value.trim().toUpperCase() || email.value.split('@')[0].toUpperCase() || 'JUGADOR'
+      await store.register(email.value, password.value, displayName)
+    } else {
+      await store.login(email.value, password.value)
+    }
+    router.push('/')
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Error desconocido'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function loginWithOAuth(provider: 'google' | 'github') {
+  error.value = ''
+  try {
+    await store.loginWithOAuth(provider)
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Error desconocido'
+  }
 }
 
 function guest() {
@@ -51,16 +76,17 @@ function guest() {
           <label>Contraseña</label>
           <input v-model="password" type="password" placeholder="••••••••" autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn xl pulse" style="width:100%;margin-top:8px;">
-          {{ tab === 'login' ? 'ENTRAR' : 'CREAR CUENTA' }}
+        <p v-if="error" style="color:var(--magenta);font-size:0.75rem;margin:4px 0;">{{ error }}</p>
+        <button type="submit" class="btn xl pulse" style="width:100%;margin-top:8px;" :disabled="loading">
+          {{ loading ? 'CARGANDO…' : (tab === 'login' ? 'ENTRAR' : 'CREAR CUENTA') }}
         </button>
       </form>
 
       <div class="auth-divider">O CONTINUAR CON</div>
 
       <div class="social">
-        <button class="btn ghost" @click="submit">GOOGLE</button>
-        <button class="btn ghost" @click="submit">GITHUB</button>
+        <button class="btn ghost" @click="loginWithOAuth('google')">GOOGLE</button>
+        <button class="btn ghost" @click="loginWithOAuth('github')">GITHUB</button>
       </div>
 
       <div class="auth-divider">O SIN CUENTA</div>
