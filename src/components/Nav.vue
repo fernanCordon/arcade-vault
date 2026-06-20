@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getUser } from '../data/user'
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
 const router = useRouter()
 const mobileOpen = ref(false)
 
-const user = computed(() => getUser())
+const authStore = useAuthStore()
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+const playerName = computed(() => {
+  const u = authStore.user
+  if (!u) return null
+  return (u.user_metadata?.displayName as string | undefined) || u.email || 'JUGADOR'
+})
 const coins = ref(1250)
 
 const links = [
@@ -51,9 +57,11 @@ function navigate(to: string) {
       CRÉDITOS · {{ String(coins).padStart(2, '0') }}
     </div>
 
-    <button class="btn auth-btn" @click="navigate('/auth')">
-      {{ user ? user.name : 'ENTRAR' }}
-    </button>
+    <template v-if="isLoggedIn">
+      <span class="btn auth-btn ghost" style="cursor:default;">{{ playerName }}</span>
+      <button class="btn auth-btn magenta" @click="authStore.logout()">SALIR</button>
+    </template>
+    <button v-else class="btn auth-btn" @click="navigate('/auth')">ENTRAR</button>
 
     <button class="hamburger btn ghost" @click="mobileOpen = true" aria-label="Menú">
       ☰
@@ -69,6 +77,10 @@ function navigate(to: string) {
       :class="{ active: isActive(link.to) }"
       @click="navigate(link.to)"
     >{{ link.label }}</a>
-    <a @click="navigate('/auth')">{{ user ? user.name : 'ENTRAR' }}</a>
+    <template v-if="isLoggedIn">
+      <a style="cursor:default;">{{ playerName }}</a>
+      <a @click="authStore.logout(); mobileOpen = false">SALIR</a>
+    </template>
+    <a v-else @click="navigate('/auth')">ENTRAR</a>
   </div>
 </template>
